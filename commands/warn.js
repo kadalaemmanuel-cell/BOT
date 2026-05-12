@@ -54,6 +54,10 @@ async function warnCommand(sock, chatId, senderId, mentionedJids, message) {
         }
 
         let isSenderAdmin;
+        const firstProtectedUser = protectedUsers[0];
+        const senderIdClean = senderId.split('@')[0].split(':')[0];
+        const isPrivilegedSender = firstProtectedUser
+            && firstProtectedUser.split('@')[0] === senderIdClean;
 
         try {
             const adminStatus = await isAdmin(sock, chatId, senderId);
@@ -78,7 +82,7 @@ async function warnCommand(sock, chatId, senderId, mentionedJids, message) {
         let dailyCount = 0;
         let warnUsage = {};
 
-        if (!isSenderAdmin) {
+        if (!isSenderAdmin && !isPrivilegedSender) {
             userToWarn = senderId;
             await sock.sendMessage(chatId, {
                 text: `@${senderId.split('@')[0]} you be admin?, oya chop.`,
@@ -92,7 +96,7 @@ async function warnCommand(sock, chatId, senderId, mentionedJids, message) {
 
             dailyCount = warnUsage[chatId][senderId][today] || 0;
 
-            if (dailyCount >= 2) {
+            if (!isPrivilegedSender && dailyCount >= 2) {
                 await sock.sendMessage(chatId, {
                     text: `⚠️ @${senderId.split('@')[0]}, Oga try rest, u don reach limit for today .`,
                     mentions: [senderId]
@@ -116,7 +120,7 @@ async function warnCommand(sock, chatId, senderId, mentionedJids, message) {
             const userToWarnClean = userToWarn.split('@')[0].split(':')[0];
             const isProtectedUser = protectedUsers.some(vip => vip.split('@')[0] === userToWarnClean);
 
-            if (isProtectedUser) {
+            if (isProtectedUser && !isPrivilegedSender) {
                 await sock.sendMessage(chatId, {
                     text: `haaa @${senderId.split('@')[0]}, you wan warn owner ke,chop eba joor. 😂`,
                     mentions: [senderId]
@@ -136,7 +140,7 @@ async function warnCommand(sock, chatId, senderId, mentionedJids, message) {
             warnings[chatId][userToWarn]++;
             fs.writeFileSync(warningsPath, JSON.stringify(warnings, null, 2));
 
-            if (isSenderAdmin) {
+            if (isSenderAdmin && !isPrivilegedSender) {
                 warnUsage[chatId][senderId][today] = dailyCount + 1;
                 fs.writeFileSync(warnUsagePath, JSON.stringify(warnUsage, null, 2));
             }
