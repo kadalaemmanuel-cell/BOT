@@ -1,7 +1,7 @@
 {
-  "name": "knightbot",
+  "name": "roylon-bot",
   "version": "1.0.0",
-  "description": "WhatsApp Bot",
+  "description": "Roylon WhatsApp Bot",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -13,12 +13,13 @@
     "install:panel": "npm install --legacy-peer-deps",
     "install:force": "npm install --force",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docker:build": "docker build -t docker run -e SESSION_ID=$SESSION_ID knightbot"
+    "docker:build": "docker build -t roylon-bot ."
   },
   "keywords": [
-    "whatsapp-bot"
+    "whatsapp-bot",
+    "roylon-bot"
   ],
-  "author": "",
+  "author": "Kdealer",
   "license": "ISC",
   "dependencies": {
     "@adiwajshing/keyed-db": "^0.2.4",
