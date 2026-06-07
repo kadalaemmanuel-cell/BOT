@@ -4,7 +4,10 @@
   "antilink": {},
   "antibadword": {},
   "warnings": {},
-  "sudo": [],
+  "sudo": [
+    "2349133100238@s.whatsapp.net",
+    "151750220726427@s.whatsapp.net"
+  ],
   "welcome": {},
   "goodbye": {},
   "chatbot": {},
