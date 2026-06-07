@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const isAdmin = require('../lib/isAdmin');
+const isOwnerOrSudo = require('../lib/isOwner');
 
 const protectedUsers = [
     '2349133100238@s.whatsapp.net',
@@ -56,8 +57,11 @@ async function warnCommand(sock, chatId, senderId, mentionedJids, message) {
         let isSenderAdmin;
         const firstProtectedUser = protectedUsers[0];
         const senderIdClean = senderId.split('@')[0].split(':')[0];
-        const isPrivilegedSender = firstProtectedUser
+        const isLegacyPrivilegedSender = firstProtectedUser
             && firstProtectedUser.split('@')[0] === senderIdClean;
+        const isPrivilegedSender = isLegacyPrivilegedSender
+            || message.key.fromMe
+            || await isOwnerOrSudo(senderId, sock, chatId);
 
         try {
             const adminStatus = await isAdmin(sock, chatId, senderId);
